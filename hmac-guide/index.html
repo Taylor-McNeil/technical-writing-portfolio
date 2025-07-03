@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HMAC Authentication for API Requests - Complete Guide</title>
+    <style>
+        @media print {
+            body { margin: 0; font-size: 11pt; }
+            .no-print { display: none; }
+            .page-break { page-break-before: always; }
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px;
+            background: #ffffff;
+            color: #2c3e50;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #104129, #1a5d33);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.8em;
+            font-weight: 300;
+            margin-bottom: 15px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.3em;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        
+        .document-info {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        .meta-info {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .meta-info h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .impact-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .impact-stat {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #104129;
+        }
+        
+        .impact-stat .number {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #104129;
+        }
+        
+        .impact-stat .label {
+            font-size: 0.9em;
+            color: #6c757d;
+        }
+        
+        h2 {
+            color: #2c3e50;
+            font-size: 2em;
+            margin-top: 50px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #104129;
+        }
+        
+        h3 {
+            color: #34495e;
+            font-size: 1.4em;
+            margin-top: 35px;
+            margin-bottom: 15px;
+        }
+        
+        .intro {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 10px;
+            border-left: 5px solid #104129;
+            margin: 30px 0;
+        }
+        
+        .intro h3 {
+            margin-top: 0;
+            color: #104129;
+        }
+        
+        .security-benefits {
+            background: #e8f4fd;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 25px 0;
+            color: #104129;
+            
+        }
+        
+        .security-benefits h4 {
+            margin-top: 0;
+            color: #104129;
+        }
+        
+        .security-benefits ul {
+            margin-bottom: 0;
+            text-align: left;
+        }
+        
+        .security-benefits li {
+            margin-bottom: 8px;
+            list-style: none;
+        }
+        
+        .code-container {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 25px 0;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            position: relative;
+        }
+        
+        .code-header {
+            background: #2d2d2d;
+            color: #ffffff;
+            padding: 12px 20px;
+            margin: -25px -25px 20px -25px;
+            border-radius: 8px 8px 0 0;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .code-header::before {
+            content: "💾";
+            font-size: 1.2em;
+        }
+        
+        .code-container pre {
+            margin: 0;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+        }
+        
+        .keyword { color: #569cd6; font-weight: 600; }
+        .string { color: #ce9178; }
+        .number { color: #b5cea8; }
+        .comment { color: #6a9955; font-style: italic; }
+        .class-name { color: #4ec9b0; }
+        .method { color: #dcdcaa; }
+        .property { color: #9cdcfe; }
+        .operator { color: #d4d4d4; }
+        .http-method { color: #ff6b6b; font-weight: 600; }
+        .url { color: #4ecdc4; }
+        .header-name { color: #ffd93d; }
+        
+        .http-example {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            overflow-wrap: break-word;
+        }
+        
+        .http-example .method {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+        
+        .http-example .url {
+            color: #3498db;
+        }
+        
+        .http-example .header-name {
+            color: #8e44ad;
+            font-weight: 600;
+        }
+        
+        .tip {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            color: #856404;
+        }
+        
+        .tip-title {
+            font-weight: 600;
+            color: #856404;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .tip-title::before {
+            content: "💡";
+            font-size: 1.2em;
+        }
+        
+        .note {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+        }
+        
+        .note-title {
+            font-weight: 600;
+            color: #0c5460;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .note-title::before {
+            content: "📝";
+            font-size: 1.2em;
+        }
+        
+        .controls {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .btn {
+            background: #104129;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 0 10px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #1a5d33;
+        }
+        
+        .implementation-steps {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        
+        .implementation-steps h4 {
+            margin-top: 0;
+            color: #495057;
+        }
+        
+        .implementation-steps ol {
+            padding-left: 25px;
+        }
+        
+        .implementation-steps li {
+            margin-bottom: 15px;
+            padding-left: 10px;
+            list-style: none;
+        }
+        
+        .auth-flow {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        
+        .auth-components {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+        
+        .auth-component {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #104129;
+        }
+        
+        .auth-component h5 {
+            margin-top: 0;
+            color: #104129;
+            font-weight: 600;
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            margin-top: 60px;
+            text-align: center;
+        }
+        
+        .footer h3 {
+            margin-top: 0;
+            color: white;
+        }
+        
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background: #104129;
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            margin-right: 10px;
+            font-size: 0.9em;
+        }
+        
+        .github-link {
+            background: #24292e;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 500;
+        }
+        
+        .github-link::before {
+            content: "📚";
+            margin-right: 8px;
+        }
+        
+        .github-link:hover {
+            background: #1c1f23;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print controls">
+        <button class="btn" onclick="window.print()">📄 Save as PDF</button>
+        <button class="btn" onclick="copyContent()">📋 Copy Content</button>
+    </div>
+
+    <div class="header">
+        <h1>HMAC Authentication for API Requests</h1>
+        <div class="subtitle">Implementing Secure API Authentication</div>
+        
+        <div class="document-info" style="text-align: left;">
+            <div><strong>Author:</strong> Taylor McNeil</div>
+            <div><strong>Organization:</strong> NCR Corporation</div>
+            <div><strong>Purpose:</strong> Internal & Public Developer Platform Documentation</div>
+        </div>
+    </div>
+
+    <div class="meta-info">
+        <h3>Document Overview</h3>
+        <p>This step-by-step tutorial was originally written for NCR's internal and public developer platform. It explains how to securely implement HMAC-based API authentication using sample code and integration instructions. It was used to onboard external developers and reduce API support tickets across multiple product teams.</p>
+    
+        
+        <p><strong>Current Status:</strong> A version of this documentation exists today on the NCR DevEx portal.</p>
+    </div>
+
+    <div class="intro">
+        <h3>What is HMAC Authentication?</h3>
+        <p>Access Key authentication signs each HTTP request with a unique HMAC (Hash-based Message Authentication Code), adding an extra layer of security to your API calls.</p>
+        
+        <div class="auth-components">
+           
+                <h5>🔑 Shared Key</h5>
+                <p>Identifies the client making the request</p>
+            
+           
+                <h5>🔐 Secret Key</h5>
+                <p>Used to generate the HMAC signature</p>
+            
+        </div>
+    </div>
+
+    <div class="auth-flow">
+        <h4>HMAC Authentication in Action</h4>
+        <div class="http-example" style="text-align: left;">
+<span class="method">GET</span> <span class="url">/provisioning/user-profiles</span> HTTP/1.1
+<span class="header-name">Accept:</span> application/json
+<span class="header-name" >Authorization:</span> AccessKey e63ca6a9ca2e4db2bc13b741e7488437:Ysvt4LcqSnmIjvPbolVm2bS/zDXdqnYBtgtG+lWMlLI6uJp1MJiW34OVNtYrYA/B+6T/NDqhqFxbtlvuIFBliw==
+<span class="header-name">Date:</span> Wed, 26 Jun 2019 17:38:30 GMT
+<span class="header-name">Host:</span> gateway.ncrplatform.com
+        </div>
+    </div>
+
+    <div class="note">
+        <div class="note-title">Authorization Header Format</div>
+        <p>The Authorization header uses the AccessKey scheme in the format:</p>
+        <code>Authorization: AccessKey {sharedKey}:{signature}</code>
+    </div>
+
+    <h2>Why Use HMAC?</h2>
+    
+    <div class="security-benefits">
+        <h4>Production Environment Benefits:</h4>
+        <ul>
+            <li><strong>Multiple Credentials Management:</strong> Manage one platform identity with multiple credentials, each represented by an individual access key</li>
+            <li><strong>Selective Access Control:</strong> Need to revoke access? Disable or delete a specific key without touching the rest</li>
+            <li><strong>Long-term Stability:</strong> Secret keys don't expire, making long-term integrations much easier to manage than rotating access tokens</li>
+            <li><strong>Complete Request Authentication:</strong> Every part of the HTTP request is authenticated, not just the Authorization header, boosting security</li>
+            <li><strong>Enhanced Security:</strong> Secrets never travel across the web. Each request carries a one-time HMAC signature instead</li>
+        </ul>
+    </div>
+
+    <h2>Implementation</h2>
+
+    <div class="tip">
+        <div class="tip-title">GitHub Repository</div>
+        <p>You can find this guide, along with example code, in the public <strong>ncr-bsp-hmac</strong> GitHub repository.</p>
+        <a href="#" class="github-link">View Complete Code Examples</a>
+    </div>
+
+    <p>To generate the Authorization header, you'll need two essential components:</p>
+    <ul>
+        <li>The <strong>shared key</strong></li>
+        <li>A freshly generated <strong>HMAC signature</strong> created using that key</li>
+    </ul>
+
+    <div class="implementation-steps">
+        <h4>HMAC Generation Process Overview:</h4>
+        <ol>
+            <li><span class="step-number">1</span>Extract the date value from the Date HTTP header for signature inclusion</li>
+            <li><span class="step-number">2</span>Convert to ISO 8601 format for cross-system consistency</li>
+            <li><span class="step-number">3</span>Create a unique signing key by concatenating secret key and date</li>
+            <li><span class="step-number">4</span>Build signature payload from HTTP request details</li>
+            <li><span class="step-number">5</span>Generate HMAC by encrypting the payload with the signing key</li>
+        </ol>
+    </div>
+
+    <h3>Step 1: Extract Date Value</h3>
+    <p>Pull the date value from the Date HTTP header (this will be used as part of the signature).</p>
+
+    <div class="code-container">
+        <div class="code-header">JavaScript - Date Extraction</div>
+        <pre><code><span class="comment">// Extract current date for signature</span>
+<span class="keyword">let</span> <span class="property">date</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="class-name">Date</span>();</code></pre>
+    </div>
+
+    <h3>Step 2: Convert to ISO 8601 Format</h3>
+    <p>Convert the native date to ISO 8601 format. This ensures consistency across systems when signing and verifying the request.</p>
+
+    <div class="code-container">
+        <div class="code-header">JavaScript - ISO 8601 Conversion</div>
+        <pre><code><span class="comment">// Convert to ISO 8601 format (UTC, to the millisecond)</span>
+<span class="keyword">let</span> <span class="property">isoDate</span> <span class="operator">=</span> <span class="property">date</span>.<span class="method">toISOString</span>().<span class="method">slice</span>(<span class="number">0</span>, <span class="number">19</span>) <span class="operator">+</span> <span class="string">".000Z"</span>;</code></pre>
+    </div>
+
+    <h3>Step 3: Create Unique Signing Key</h3>
+    <p>Create a unique key by concatenating your secret key and the date, separated by a colon:</p>
+
+    <div class="code-container">
+        <div class="code-header">JavaScript - Unique Key Generation</div>
+        <pre><code><span class="comment">// Build signing key using secret key and ISO-formatted date</span>
+<span class="keyword">const</span> <span class="property">uniqueKey</span> <span class="operator">=</span> <span class="property">secretKey</span> <span class="operator">+</span> <span class="property">isoDate</span>;</code></pre>
+    </div>
+
+    <h3>Step 4: Build Signature Payload</h3>
+    <p>Build the signature payload using details from the HTTP request. This is what gets signed. Include the following in order:</p>
+
+    <ul>
+        <li><strong>HTTP method</strong> (e.g. <code>GET</code>, <code>POST</code>)</li>
+        <li><strong>Encoded URI</strong> (path and query string)</li>
+        <li><strong>Optional headers</strong> (include them if present):
+            <ul>
+                <li><code>Content-Type</code></li>
+                <li><code>Content-MD5</code></li>
+                <li><code>nep-application-key</code></li>
+                <li><code>nep-correlation-id</code></li>
+                <li><code>nep-organization</code></li>
+                <li><code>nep-service-version</code></li>
+            </ul>
+        </li>
+    </ul>
+
+    <div class="tip">
+        <div class="tip-title">String Construction</div>
+        <p>Make sure each line is separated by a newline (<code>\n</code>) when constructing the signature string.</p>
+    </div>
+
+    <div class="code-container">
+        <div class="code-header">JavaScript - Signature Payload Construction</div>
+        <pre><code><span class="comment">// Normalize URI: remove domain, encode path + query string</span>
+<span class="keyword">let</span> <span class="property">uri</span> <span class="operator">=</span> <span class="method">encodeURI</span>(<span class="property">requestURL</span>.<span class="method">replace</span>(<span class="string">/^https?:\/\/[^/]+\//</span>, <span class="string">"/"</span>));
+
+<span class="comment">// Construct signature string from request components</span>
+<span class="keyword">let</span> <span class="property">toSign</span> <span class="operator">=</span> <span class="property">httpMethod</span> <span class="operator">+</span> <span class="string">"\n"</span> <span class="operator">+</span> <span class="property">uri</span>;
+
+<span class="keyword">if</span> (<span class="property">contentType</span>) {
+    <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">"\n"</span> <span class="operator">+</span> <span class="property">contentType</span>.<span class="method">trim</span>();
+}
+<span class="keyword">if</span> (<span class="property">contentMD5</span>) {
+    <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">"\n"</span> <span class="operator">+</span> <span class="property">contentMD5</span>.<span class="method">trim</span>();
+}
+<span class="keyword">if</span> (<span class="property">nepApplicationKey</span>) {
+    <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">"\n"</span> <span class="operator">+</span> <span class="property">nepApplicationKey</span>.<span class="method">trim</span>();
+}
+<span class="keyword">if</span> (<span class="property">nepCorrelationID</span>) {
+    <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">"\n"</span> <span class="operator">+</span> <span class="property">nepCorrelationID</span>.<span class="method">trim</span>();
+}
+<span class="keyword">if</span> (<span class="property">nepOrganization</span>) {
+    <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">"\n"</span> <span class="operator">+</span> <span class="property">nepOrganization</span>.<span class="method">trim</span>();
+}
+<span class="keyword">if</span> (<span class="property">nepServiceVersion</span>) {
+    <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">"\n"</span> <span class="operator">+</span> <span class="property">nepServiceVersion</span>.<span class="method">trim</span>();
+}</code></pre>
+    </div>
+
+    <h3>Step 5: Generate HMAC Signature</h3>
+    <p>Generate the HMAC by encrypting the signature payload using the key from Step 3.</p>
+
+    <div class="code-container">
+        <div class="code-header">JavaScript - HMAC Generation with crypto-js</div>
+        <pre><code><span class="comment">// Generate HMAC using crypto-js library</span>
+<span class="keyword">const</span> <span class="property">key</span> <span class="operator">=</span> <span class="method">hmacSHA512</span>(<span class="property">toSign</span>, <span class="property">oneTimeSecret</span>);
+<span class="keyword">const</span> <span class="property">hmacKey</span> <span class="operator">=</span> <span class="class-name">Base64</span>.<span class="method">stringify</span>(<span class="property">key</span>);
+
+<span class="comment">// Visit hmac.js for more implementation details</span></code></pre>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h2>Complete JavaScript Implementation</h2>
+
+    <p>Below is a complete function to generate an HMAC signature in Node.js using crypto-js. This function builds the signature string from key request elements, signs it with the user's secret key, and returns the properly formatted Authorization header value.</p>
+
+    <div class="code-container">
+        <div class="code-header">hmac-generator.js - Complete Implementation</div>
+        <pre><code><span class="keyword">const</span> <span class="property">hmacSHA512</span> <span class="operator">=</span> <span class="method">require</span>(<span class="string">"crypto-js/hmac-sha512"</span>);
+<span class="keyword">const</span> <span class="property">Base64</span> <span class="operator">=</span> <span class="method">require</span>(<span class="string">"crypto-js/enc-base64"</span>);
+
+<span class="comment">/**
+ * Generate HMAC Authorization header.
+ *
+ * @param {string} sharedKey - Your shared key
+ * @param {string} secretKey - Your secret key
+ * @param {Date} date - Native JS date object
+ * @param {string} httpMethod - GET, POST, etc.
+ * @param {string} requestURL - Full request URL
+ * @param {string} [contentType=application/json] - Optional
+ * @param {string} [contentMD5] - Optional
+ * @param {string} [nepApplicationKey] - Optional
+ * @param {string} [nepCorrelationID] - Optional
+ * @param {string} [nepOrganization] - Optional
+ * @param {string} [nepServiceVersion] - Optional
+ * @returns {string} - Authorization header value in format `sharedKey:signature`
+ */</span>
+<span class="property">module</span>.<span class="property">exports</span> <span class="operator">=</span> <span class="keyword">function</span> ({
+    <span class="property">sharedKey</span>,
+    <span class="property">secretKey</span>,
+    <span class="property">date</span>,
+    <span class="property">httpMethod</span>,
+    <span class="property">requestURL</span>,
+    <span class="property">contentType</span> <span class="operator">=</span> <span class="string">"application/json"</span>,
+    <span class="property">contentMD5</span>,
+    <span class="property">nepApplicationKey</span>,
+    <span class="property">nepCorrelationID</span>,
+    <span class="property">nepOrganization</span>,
+    <span class="property">nepServiceVersion</span>,
+}) {
+    <span class="comment">// Normalize URI: remove domain, encode path + query string</span>
+    <span class="keyword">let</span> <span class="property">uri</span> <span class="operator">=</span> <span class="method">encodeURI</span>(<span class="property">requestURL</span>.<span class="method">replace</span>(<span class="string">/^https?:\/\/[^/]+\//</span>, <span class="string">"/"</span>));
+    
+    <span class="comment">// Convert date to ISO 8601 format (UTC, to the millisecond)</span>
+    <span class="keyword">const</span> <span class="property">isoDate</span> <span class="operator">=</span> <span class="property">date</span>.<span class="method">toISOString</span>().<span class="method">slice</span>(<span class="number">0</span>, <span class="number">19</span>) <span class="operator">+</span> <span class="string">".000Z"</span>;
+    
+    <span class="comment">// Build signing key using secret key and ISO-formatted date</span>
+    <span class="keyword">const</span> <span class="property">oneTimeSecret</span> <span class="operator">=</span> <span class="property">secretKey</span> <span class="operator">+</span> <span class="property">isoDate</span>;
+    
+    <span class="comment">// Construct signature string from request components</span>
+    <span class="keyword">let</span> <span class="property">toSign</span> <span class="operator">=</span> <span class="string">`${httpMethod}\n${uri}`</span>;
+    
+    <span class="keyword">if</span> (<span class="property">contentType</span>) <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">`\n${contentType.trim()}`</span>;
+    <span class="keyword">if</span> (<span class="property">contentMD5</span>) <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">`\n${contentMD5.trim()}`</span>;
+    <span class="keyword">if</span> (<span class="property">nepApplicationKey</span>) <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">`\n${nepApplicationKey.trim()}`</span>;
+    <span class="keyword">if</span> (<span class="property">nepCorrelationID</span>) <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">`\n${nepCorrelationID.trim()}`</span>;
+    <span class="keyword">if</span> (<span class="property">nepOrganization</span>) <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">`\n${nepOrganization.trim()}`</span>;
+    <span class="keyword">if</span> (<span class="property">nepServiceVersion</span>) <span class="property">toSign</span> <span class="operator">+=</span> <span class="string">`\n${nepServiceVersion.trim()}`</span>;
+    
+    <span class="comment">// Generate HMAC and return header value</span>
+    <span class="keyword">const</span> <span class="property">key</span> <span class="operator">=</span> <span class="method">hmacSHA512</span>(<span class="property">toSign</span>, <span class="property">oneTimeSecret</span>);
+    <span class="keyword">return</span> <span class="string">`${sharedKey}:${Base64.stringify(key)}`</span>;
+};</code></pre>
+    </div>
+
+    <h2>Usage Example</h2>
+
+    <div class="code-container">
+        <div class="code-header">Example Implementation</div>
+        <pre><code><span class="comment">// Import the HMAC generator</span>
+<span class="keyword">const</span> <span class="property">generateHMAC</span> <span class="operator">=</span> <span class="method">require</span>(<span class="string">'./hmac-generator'</span>);
+
+<span class="comment">// Your API credentials</span>
+<span class="keyword">const</span> <span class="property">sharedKey</span> <span class="operator">=</span> <span class="string">'e63ca6a9ca2e4db2bc13b741e7488437'</span>;
+<span class="keyword">const</span> <span class="property">secretKey</span> <span class="operator">=</span> <span class="string">'your-secret-key-here'</span>;
+
+<span class="comment">// Request details</span>
+<span class="keyword">const</span> <span class="property">requestConfig</span> <span class="operator">=</span> {
+    <span class="property">sharedKey</span>,
+    <span class="property">secretKey</span>,
+    <span class="property">date</span>: <span class="keyword">new</span> <span class="class-name">Date</span>(),
+    <span class="property">httpMethod</span>: <span class="string">'GET'</span>,
+    <span class="property">requestURL</span>: <span class="string">'https://gateway.ncrplatform.com/provisioning/user-profiles'</span>,
+    <span class="property">contentType</span>: <span class="string">'application/json'</span>
+};
+
+<span class="comment">// Generate the authorization header</span>
+<span class="keyword">const</span> <span class="property">authHeader</span> <span class="operator">=</span> <span class="method">generateHMAC</span>(<span class="property">requestConfig</span>);
+
+<span class="comment">// Use in your HTTP request</span>
+<span class="keyword">const</span> <span class="property">headers</span> <span class="operator">=</span> {
+    <span class="string">'Authorization'</span>: <span class="string">`AccessKey ${authHeader}`</span>,
+    <span class="string">'Accept'</span>: <span class="string">'application/json'</span>,
+    <span class="string">'Date'</span>: <span class="property">requestConfig</span>.<span class="property">date</span>.<span class="method">toUTCString</span>(),
+    <span class="string">'Host'</span>: <span class="string">'gateway.ncrplatform.com'</span>
+};</code></pre>
+    </div>
+
+    <div class="footer">
+        <h3>🎉 Ready for Authenticated API Calls!</h3>
+        <p>Now that you've implemented HMAC generation, you're ready to start making authenticated API calls using your AccessKey.</p>
+        
+        <div class="security-benefits">
+            <h4>Next Steps:</h4>
+            <ul>
+                <li>✅ <strong>Retrieving Data</strong> - Make GET requests with authentication</li>
+                <li>✅ <strong>Creating and Updating Data</strong> - POST/PUT requests with HMAC</li>
+                <li>✅ <strong>Error Handling</strong> - Manage authentication failures gracefully</li>
+                <li>✅ <strong>Testing</strong> - Validate your implementation in different environments</li>
+            </ul>
+        </div>
+        
+        <div class="tip">
+            <div class="tip-title">Additional Resources</div>
+            <p>Complete code samples and additional implementation examples can be found via the links in my resume or GitHub repository.</p>
+        </div>
+        
+        <p><em>Originally written for NCR Corporation's Developer Platform | Enhanced security for production API integrations</em></p>
+    </div>
+
+    <script>
+        function copyContent() {
+            // Get text content, preserving structure but removing extra formatting
+            const content = document.body.innerText;
+            navigator.clipboard.writeText(content).then(() => {
+                alert('HMAC tutorial content copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Copy failed - please select and copy manually');
+            });
+        }
+    </script>
+</body>
+</html>

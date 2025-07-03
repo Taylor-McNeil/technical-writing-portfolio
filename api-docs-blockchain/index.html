@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar API Component Schemas</title>
+    <style>
+        @media print {
+            body { margin: 0; font-size: 10pt; }
+            .no-print { display: none; }
+            .page-break { page-break-before: always; }
+        }
+        
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            line-height: 1.4;
+            margin: 20px;
+            background: #f8f9fa;
+            color: #2c3e50;
+        }
+        
+        .header {
+          background: linear-gradient(145deg, #104129, #1a5d33);
+          color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.2em;
+        }
+        
+        .meta-info {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .meta-info h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .yaml-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .yaml-header {
+            background: #34495e;
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+        }
+        
+        .yaml-content {
+            padding: 0;
+            overflow-x: auto;
+        }
+        
+        pre {
+            margin: 0;
+            padding: 20px;
+            font-size: 11px;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        .keyword { color: #d73a49; font-weight: 600; }
+        .string { color: #032f62; }
+        .number { color: #005cc5; }
+        .comment { color: #6a737d; font-style: italic; }
+        .property { color: #6f42c1; font-weight: 500; }
+        .value { color: #104129; }
+        
+        .download-btn {
+            background: #104129;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 10px 5px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .download-btn:hover {
+            background: #1a5d33;
+        }
+    
+        
+        .controls {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .page-info {
+            font-size: 12px;
+            color: #6c757d;
+            text-align: right;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print controls">
+        <button class="download-btn" onclick="window.print()">📄 Save as PDF</button>
+        <button class="download-btn" onclick="copyToClipboard()">📋 Copy YAML</button>
+    </div>
+
+    <div class="header">
+        <h1>Stellar API Component Schemas</h1>
+        <p>OpenAPI 3.0.0 Specification</p>
+    </div>
+
+    <div class="meta-info">
+        <h3>Documentation Information</h3>
+        <p><strong>Version:</strong> 1.0.0</p>
+        <p><strong>Title:</strong> Component Schemas</p>
+        <p><strong>Description:</strong> This document demonstrates my ability to create and maintain OpenAPI YAML schemas to support developer onboarding and integration clarity. The schema defines customer KYC flows, transaction structures, and SEP protocol status mappings.</p>
+        <p><strong>Format:</strong> YAML (OpenAPI 3.0.0)</p>
+        <p><strong>Author:</strong> Taylor McNeil</p>
+    </div>
+
+    <div class="yaml-container">
+        <div class="yaml-header">
+            📋 Component Schemas YAML
+        </div>
+        <div class="yaml-content">
+            <pre id="yaml-content"><span class="keyword">openapi:</span> <span class="string">3.0.0</span>
+<span class="keyword">info:</span>
+  <span class="property">version:</span> <span class="string">"1.0.0"</span>
+  <span class="property">title:</span> <span class="string">Component Schemas</span>
+  <span class="property">description:</span> <span class="string">|
+    This document specifies the schemas used for all APIs.</span>
+<span class="keyword">tags:</span>
+  - <span class="property">name:</span> <span class="string">"Component Schemas"</span>
+    <span class="property">description:</span> <span class="string">"Component Schemas"</span>
+<span class="keyword">paths:</span> <span class="value">{ }</span>
+<span class="keyword">components:</span>
+  <span class="keyword">schemas:</span>
+    <span class="property">PutCustomerRequest:</span>
+      <span class="property">type:</span> <span class="value">object</span>
+      <span class="property">properties:</span>
+        <span class="property">id:</span>
+          <span class="property">description:</span> <span class="string">The ID of the customer as returned in the response of a previous PUT request.</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">account:</span>
+          <span class="property">description:</span> <span class="string">The Stellar or Muxed Account authenticated with the Platform via SEP-10.</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">memo:</span>
+          <span class="property">description:</span> <span class="string">The memo value identifying a customer with a shared account, where the shared account is `account`.</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">memo_type:</span>
+          <span class="property">description:</span> <span class="string">The type of memo used to identify a customer with a shared account.</span>
+          <span class="property">type:</span> <span class="value">string</span>
+          <span class="property">enum:</span>
+            - <span class="value">id</span>
+            - <span class="value">hash</span>
+            - <span class="value">text</span>
+        <span class="property">type:</span>
+          <span class="property">description:</span> <span class="string">|
+            The type of action the customer is being KYCd for. 
+            See the [Type Specification](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0012.md#type-specification) documented in SEP-12 for more info.
+            For SEP-31 you can define your own types in the assets configuration.
+            For SEP-24 pre-defined value `sep24-customer` is used.</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">first_name:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">last_name:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">additional_name:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">address_country_code:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">state_or_province:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">city:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">postal_code:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">address:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">mobile_number:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">email_address:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">birth_date:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+          <span class="property">format:</span> <span class="value">date</span>
+        <span class="property">birth_place:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">birth_country_code:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">bank_account_number:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">bank_account_type:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">bank_number:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">bank_phone_number:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">bank_branch_number:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">tax_id:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">tax_id_name:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">occupation:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">employer_name:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">employer_address:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">language_code:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">id_type:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">id_country_code:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">id_issue_date:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+          <span class="property">format:</span> <span class="value">date</span>
+        <span class="property">id_expiration_date:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+          <span class="property">format:</span> <span class="value">date</span>
+        <span class="property">id_number:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">ip_address:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+        <span class="property">sex:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+
+    <span class="property">PutCustomerResponse:</span>
+      <span class="property">type:</span> <span class="value">object</span>
+      <span class="property">properties:</span>
+        <span class="property">id:</span>
+          <span class="property">type:</span> <span class="value">string</span>
+
+    <span class="comment"># Additional schemas truncated for brevity - full content available in downloadable version</span></pre>
+        </div>
+    </div>
+
+    <div class="page-info">
+        <p>Stellar API Component Schemas - OpenAPI 3.0.0 Specification by Taylor McNeil</p>
+    </div>
+
+    <script>
+        function copyToClipboard() {
+            const yamlText = `openapi: 3.0.0
+info:
+  version: "2.0.0"
+  title: Component Schemas
+  description: |
+    This document specifies the schemas used for all APIs.
+tags:
+  - name: "Component Schemas"
+    description: "Component Schemas"
+paths: { }
+components:
+  schemas:
+    PutCustomerRequest:
+      type: object
+      properties:
+        id:
+          description: The ID of the customer as returned in the response of a previous PUT request.
+          type: string
+        account:
+          description: The Stellar or Muxed Account authenticated with the Platform via SEP-10.
+          type: string
+        memo:
+          description: The memo value identifying a customer with a shared account, where the shared account is \`account\`.
+          type: string
+        memo_type:
+          description: The type of memo used to identify a customer with a shared account.
+          type: string
+          enum:
+            - id
+            - hash
+            - text
+        type:
+          description: |
+            The type of action the customer is being KYCd for. 
+            See the [Type Specification](https://github.com/stellar/stellar-protocol/blob/master/ecosystem/sep-0012.md#type-specification) documented in SEP-12 for more info.
+            For SEP-31 you can define your own types in the assets configuration.
+            For SEP-24 pre-defined value \`sep24-customer\` is used.
+          type: string
+        first_name:
+          type: string
+        last_name:
+          type: string
+        additional_name:
+          type: string
+        address_country_code:
+          type: string
+        state_or_province:
+          type: string
+        city:
+          type: string
+        postal_code:
+          type: string
+        address:
+          type: string
+        mobile_number:
+          type: string
+        email_address:
+          type: string
+        birth_date:
+          type: string
+          format: date
+        birth_place:
+          type: string
+        birth_country_code:
+          type: string
+        bank_account_number:
+          type: string
+        bank_account_type:
+          type: string
+        bank_number:
+          type: string
+        bank_phone_number:
+          type: string
+        bank_branch_number:
+          type: string
+        tax_id:
+          type: string
+        tax_id_name:
+          type: string
+        occupation:
+          type: string
+        employer_name:
+          type: string
+        employer_address:
+          type: string
+        language_code:
+          type: string
+        id_type:
+          type: string
+        id_country_code:
+          type: string
+        id_issue_date:
+          type: string
+          format: date
+        id_expiration_date:
+          type: string
+          format: date
+        id_number:
+          type: string
+        ip_address:
+          type: string
+        sex:
+          type: string`;
+          
+            navigator.clipboard.writeText(yamlText).then(() => {
+                alert('YAML copied to clipboard!');
+            });
+        }
+    </script>
+</body>
+</html>
