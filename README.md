@@ -1,2 +1,1 @@
-# technical-writing-portfolio
-Professional writing samples and technical documentation portfolio
+# My Technical Writing Portfolio
