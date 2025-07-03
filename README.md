@@ -10,7 +10,7 @@ This portfolio demonstrates my approach to technical writing through real-world 
 
 ### Featured Writing Samples
 
-**[HMAC Authentication Guide](https://taylor-mcneil.github.io/technical-writing-portfolio/hmac-auth-guide/)**
+**[HMAC Authentication Guide](https://taylor-mcneil.github.io/technical-writing-portfolio/hmac-guide/index.html)**
 - Enterprise API security documentation with step-by-step implementation
 - Reduced support tickets and improved developer onboarding at NCR
 - Includes code samples in Python and JavaScript examples
